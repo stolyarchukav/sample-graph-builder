@@ -22,4 +22,12 @@ public class Distance implements Weight {
         throw new IllegalArgumentException();
     }
 
+    @Override
+    public int compareTo(Weight o) {
+        if (o instanceof Distance) {
+            return kilometers - ((Distance) o).kilometers;
+        }
+        throw new IllegalArgumentException();
+    }
+
 }

@@ -1,6 +1,6 @@
 package graph;
 
-public interface Weight {
+public interface Weight extends Comparable<Weight> {
 
     Weight plus(Weight weight);
 

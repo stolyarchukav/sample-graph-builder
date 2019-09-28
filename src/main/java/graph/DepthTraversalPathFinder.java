@@ -5,7 +5,14 @@ import java.util.*;
 public class DepthTraversalPathFinder implements PathFinder {
 
     @Override
-    public <T> List<Path<T>> findPaths(Map<UUID, Vertex<T>> vertices, UUID firstVertexId, UUID secondVertexId) {
+    public <T>Path<T> findPath(Map<UUID, Vertex<T>> vertices, UUID firstVertexId, UUID secondVertexId) {
+        return findPaths(vertices, firstVertexId, secondVertexId).stream()
+                .min(Comparator.comparing(Path::getTotalWeight))
+                .orElse(null);
+    }
+
+    @Override
+    public <T>List<Path<T>> findPaths(Map<UUID, Vertex<T>> vertices, UUID firstVertexId, UUID secondVertexId) {
         Path<T> path = new Path<>(vertices.get(firstVertexId));
         return findSubPaths(vertices, path, firstVertexId, secondVertexId);
     }

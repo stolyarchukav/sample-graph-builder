@@ -39,13 +39,19 @@ public class GraphTest {
     }
 
     @Test
-    void findPathsBetweenAllCities() {
-        cities.forEach(startPoint -> {
-            cities.forEach(finishPoint -> {
-                System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
-                pathPrinter.print(graph.findPaths(startPoint, finishPoint));
-            });
-        });
+    void findAllPathsBetweenAllCities() {
+        cities.forEach(startPoint -> cities.forEach(finishPoint -> {
+            System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
+            pathPrinter.print(graph.findPaths(startPoint, finishPoint));
+        }));
+    }
+
+    @Test
+    void findBestPathsBetweenAllCities() {
+        cities.forEach(startPoint -> cities.forEach(finishPoint -> {
+            System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
+            pathPrinter.print(graph.findPath(startPoint, finishPoint));
+        }));
     }
 
 }

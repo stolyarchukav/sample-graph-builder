@@ -45,6 +45,10 @@ public class Graph<T> {
         secondVertex.addEdge(firstVertex, weight);
     }
 
+    public Path<T> findPath(UUID firstVertexId, UUID secondVertexId) {
+        return pathFinder.findPath(vertices, firstVertexId, secondVertexId);
+    }
+
     public List<Path<T>> findPaths(UUID firstVertexId, UUID secondVertexId) {
         return pathFinder.findPaths(vertices, firstVertexId, secondVertexId);
     }

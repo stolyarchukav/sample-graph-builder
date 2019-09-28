@@ -18,4 +18,9 @@ public class NoWeight implements Weight {
         return INSTANCE;
     }
 
+    @Override
+    public int compareTo(Weight o) {
+        return 0;
+    }
+
 }
