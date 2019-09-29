@@ -3,28 +3,39 @@ package graph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class GraphTest extends GraphTestBase {
+public class GraphNoWeightTest extends GraphTestBase {
 
     private Graph<String> graph;
-    private List<UUID> cityIds;
+    private List<UUID> ids;
 
     @BeforeEach
     void setUp() {
         graph = Graph.create();
-        cityIds = fillGraph(graph);
+        UUID p1 = graph.addVertex("p1");
+        UUID p2 = graph.addVertex("p2");
+        UUID p3 = graph.addVertex("p3");
+        UUID p4 = graph.addVertex("p4");
+
+        UUID p5 = graph.addVertex("p5");
+        UUID p6 = graph.addVertex("p6");
+
+        graph.addEdge(p1, p2);
+        graph.addEdge(p2, p3);
+        graph.addEdge(p1, p3);
+        graph.addEdge(p3, p4);
+
+        graph.addEdge(p5, p6);
+        ids = Arrays.asList(p1, p2, p3, p4, p5, p6);
     }
 
     @Test
     void findAllPathsExistInBothDirections() {
-        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+        ids.forEach(startPoint -> ids.forEach(finishPoint -> {
             Collection<Path<String>> pathsDirect = graph.getAllPaths(startPoint, finishPoint);
             Collection<Path<String>> pathsReverse = graph.getAllPaths(finishPoint, startPoint);
             assertEquals(pathsDirect.size(), pathsReverse.size());
@@ -33,9 +44,11 @@ public class GraphTest extends GraphTestBase {
 
     @Test
     void findBestPathsExistsInBothDirections() {
-        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+        ids.forEach(startPoint -> ids.forEach(finishPoint -> {
             Optional<Path<String>> pathsDirect = graph.getPath(startPoint, finishPoint);
             Optional<Path<String>> pathsReverse = graph.getPath(finishPoint, startPoint);
+            System.out.println(pathsDirect);
+            System.out.println(pathsReverse);
             pathsDirect.ifPresent(path -> {
                 if (pathsReverse.isPresent()) {
                     assertEquals(path.getTotalWeight(), pathsReverse.get().getTotalWeight());
@@ -49,7 +62,7 @@ public class GraphTest extends GraphTestBase {
 
     @Test
     void printAllPathsBetweenAllCities() {
-        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+        ids.forEach(startPoint -> ids.forEach(finishPoint -> {
             Collection<Path<String>> paths = graph.getAllPaths(startPoint, finishPoint);
             System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
             System.out.println("Paths:");
@@ -59,7 +72,7 @@ public class GraphTest extends GraphTestBase {
 
     @Test
     void printBestPathsBetweenAllCities() {
-        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+        ids.forEach(startPoint -> ids.forEach(finishPoint -> {
             System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
             graph.getPath(startPoint, finishPoint).ifPresent(path -> System.out.println(pathWriter.writeToString(path)));
         }));

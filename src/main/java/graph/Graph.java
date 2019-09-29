@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @ToString
 @Getter
@@ -34,10 +31,6 @@ public class Graph<T> {
         return id;
     }
 
-    public T getData(UUID vertexId) {
-        return vertices.get(vertexId).getData();
-    }
-
     public void addEdge(UUID firstVertexId, UUID secondVertexId) {
         addEdge(firstVertexId, secondVertexId, NoWeight.INSTANCE);
     }
@@ -45,16 +38,48 @@ public class Graph<T> {
     public void addEdge(UUID firstVertexId, UUID secondVertexId, Weight weight) {
         Vertex<T> firstVertex = vertices.get(firstVertexId);
         Vertex<T> secondVertex = vertices.get(secondVertexId);
+        verifyNonNull(firstVertex, secondVertex);
         firstVertex.addEdge(secondVertex, weight);
         secondVertex.addEdge(firstVertex, weight);
     }
 
-    public Path<T> findPath(UUID firstVertexId, UUID secondVertexId) {
-        return pathFinder.findPath(vertices, firstVertexId, secondVertexId);
+    public Optional<Path<T>> getPath(UUID firstVertexId, UUID secondVertexId) {
+        verifyExist(firstVertexId, secondVertexId);
+        return getBestPath(pathFinder.getAllPaths(vertices, firstVertexId, secondVertexId));
     }
 
-    public Collection<Path<T>> findPaths(UUID firstVertexId, UUID secondVertexId) {
-        return pathFinder.findPaths(vertices, firstVertexId, secondVertexId);
+    public Collection<Path<T>> getAllPaths(UUID firstVertexId, UUID secondVertexId) {
+        return pathFinder.getAllPaths(vertices, firstVertexId, secondVertexId);
+    }
+
+    public T getData(UUID vertexId) {
+        return vertices.get(vertexId).getData();
+    }
+
+    private void verifyNonNull(Vertex<T> firstVertex, Vertex<T> secondVertex) {
+        verifyNonNull(firstVertex);
+        verifyNonNull(secondVertex);
+    }
+
+    private void verifyNonNull(Vertex<T> vertex) {
+        if (vertex == null) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void verifyExist(UUID firstVertexId, UUID secondVertexId) {
+        Vertex<T> firstVertex = vertices.get(firstVertexId);
+        Vertex<T> secondVertex = vertices.get(secondVertexId);
+        verifyNonNull(firstVertex, secondVertex);
+    }
+
+    private Optional<Path<T>> getBestPath(Collection<Path<T>> paths) {
+        return paths.stream().min(getPathComparator());
+    }
+
+    private <T> Comparator<Path<T>> getPathComparator() {
+        Comparator<Path<T>> comparator = Comparator.comparing(Path::getTotalWeight);
+        return comparator.thenComparing(Path::getSegmentsCount);
     }
 
 }

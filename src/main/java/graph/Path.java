@@ -35,4 +35,8 @@ public class Path<T> {
         return false;
     }
 
+    public int getSegmentsCount() {
+        return segments.size();
+    }
+
 }

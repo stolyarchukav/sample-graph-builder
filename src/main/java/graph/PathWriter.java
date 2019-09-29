@@ -10,7 +10,10 @@ public class PathWriter {
             }
             builder.append(vertex.getData());
         });
-        builder.append(". Total weight: ").append(path.getTotalWeight());
+        Weight totalWeight = path.getTotalWeight();
+        if (totalWeight != null && totalWeight != NoWeight.INSTANCE) {
+            builder.append(". Total weight: ").append(totalWeight);
+        }
         return builder.toString();
     }
     

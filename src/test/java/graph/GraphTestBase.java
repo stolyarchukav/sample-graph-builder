@@ -26,7 +26,11 @@ public abstract class GraphTestBase {
         graph.addEdge(bracciano, orvieto, new Distance(97));
         graph.addEdge(bracciano, cerveteri, new Distance(20));
 
-        return asList(roma, napoli, orvieto, cerveteri, bracciano);
+        UUID cagliari = graph.addVertex("Cagliari");
+        UUID olbia = graph.addVertex("Olbia");
+        graph.addEdge(cagliari, olbia, new Distance(273));
+
+        return asList(roma, napoli, orvieto, cerveteri, bracciano, cagliari, olbia);
     }
 
 }

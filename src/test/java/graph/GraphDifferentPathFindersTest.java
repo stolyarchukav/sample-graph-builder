@@ -27,7 +27,7 @@ public class GraphDifferentPathFindersTest extends GraphTestBase {
         List<UUID> cityIds = fillGraph(graph);
         return cityIds.stream()
                     .flatMap(startPoint -> cityIds.stream()
-                            .flatMap(finishPoint -> graph.findPaths(startPoint, finishPoint).stream()
+                            .flatMap(finishPoint -> graph.getAllPaths(startPoint, finishPoint).stream()
                                     .map(pathWriter::writeToString).sorted()))
                     .collect(Collectors.toList());
     }
@@ -36,7 +36,8 @@ public class GraphDifferentPathFindersTest extends GraphTestBase {
         List<UUID> cityIds = fillGraph(graph);
         return cityIds.stream()
                 .flatMap(startPoint -> cityIds.stream()
-                        .map(finishPoint -> pathWriter.writeToString(graph.findPath(startPoint, finishPoint))))
+                        .map(finishPoint -> graph.getPath(startPoint, finishPoint)
+                                .map(pathWriter::writeToString).orElse(null)))
                 .collect(Collectors.toList());
     }
 
