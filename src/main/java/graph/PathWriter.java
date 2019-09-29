@@ -1,10 +1,8 @@
 package graph;
 
-import java.util.Collection;
-
-public class PathPrinter {
+public class PathWriter {
     
-    public <T>void print(Path<T> path) {
+    public <T>String writeToString(Path<T> path) {
         StringBuilder builder = new StringBuilder();
         path.getSegments().forEach((vertex, weight) -> {
             if (weight != null) {
@@ -13,12 +11,7 @@ public class PathPrinter {
             builder.append(vertex.getData());
         });
         builder.append(". Total weight: ").append(path.getTotalWeight());
-        System.out.println(builder.toString());
-    }
-
-    public <T>void print(Collection<Path<T>> paths) {
-        System.out.println("Paths:");
-        paths.forEach(this::print);
+        return builder.toString();
     }
     
 }

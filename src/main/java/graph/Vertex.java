@@ -1,5 +1,6 @@
 package graph;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -7,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.UUID;
 
 @ToString(exclude = "edges")
+@EqualsAndHashCode
 public class Vertex<T> {
 
     @Getter

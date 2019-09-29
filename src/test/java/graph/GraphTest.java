@@ -4,53 +4,56 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
-import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GraphTest {
+public class GraphTest extends GraphTestBase {
 
     private Graph<String> graph;
-
-    private PathPrinter pathPrinter = new PathPrinter();
-
-    private Collection<UUID> cities;
+    private List<UUID> cityIds;
 
     @BeforeEach
     void setUp() {
         graph = Graph.create();
-        UUID roma = graph.addVertex("Roma");
-
-        UUID napoli = graph.addVertex("Napoli");
-        graph.addEdge(roma, napoli, new Distance(227));
-
-        UUID orvieto = graph.addVertex("Orvieto");
-        graph.addEdge(roma, orvieto, new Distance(121));
-
-        UUID cerveteri = graph.addVertex("Cerveteri");
-        graph.addEdge(cerveteri, orvieto, new Distance(130));
-        graph.addEdge(cerveteri, roma, new Distance(55));
-
-        UUID bracciano = graph.addVertex("Bracciano");
-        graph.addEdge(bracciano, orvieto, new Distance(97));
-        graph.addEdge(bracciano, cerveteri, new Distance(20));
-
-        cities = asList(roma, napoli, orvieto, cerveteri, bracciano);
+        cityIds = fillGraph(graph);
     }
 
     @Test
-    void findAllPathsBetweenAllCities() {
-        cities.forEach(startPoint -> cities.forEach(finishPoint -> {
-            System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
-            pathPrinter.print(graph.findPaths(startPoint, finishPoint));
+    void findAllPathsExistInBothDirections() {
+        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+            Collection<Path<String>> pathsDirect = graph.findPaths(startPoint, finishPoint);
+            Collection<Path<String>> pathsReverse = graph.findPaths(finishPoint, startPoint);
+            assertEquals(pathsDirect.size(), pathsReverse.size());
         }));
     }
 
     @Test
-    void findBestPathsBetweenAllCities() {
-        cities.forEach(startPoint -> cities.forEach(finishPoint -> {
+    void findBestPathsExistsInBothDirections() {
+        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+            Path<String> pathsDirect = graph.findPath(startPoint, finishPoint);
+            Path<String> pathsReverse = graph.findPath(finishPoint, startPoint);
+            assertEquals(pathsDirect.getTotalWeight(), pathsReverse.getTotalWeight());
+            assertEquals(pathsDirect.getSegments().size(), pathsReverse.getSegments().size());
+        }));
+    }
+
+    @Test
+    void printAllPathsBetweenAllcityIds() {
+        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+            Collection<Path<String>> paths = graph.findPaths(startPoint, finishPoint);
             System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
-            pathPrinter.print(graph.findPath(startPoint, finishPoint));
+            System.out.println("Paths:");
+            paths.stream().map(pathWriter::writeToString).forEach(System.out::println);
+        }));
+    }
+
+    @Test
+    void printBestPathsBetweenAllcityIds() {
+        cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
+            System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
+            System.out.println(pathWriter.writeToString(graph.findPath(startPoint, finishPoint)));
         }));
     }
 

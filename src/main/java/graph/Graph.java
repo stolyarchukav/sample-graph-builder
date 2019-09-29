@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,10 +17,14 @@ public class Graph<T> {
 
     private final Map<UUID, Vertex<T>> vertices;
 
-    private final PathFinder pathFinder = new DepthTraversalPathFinder();
+    private final PathFinder pathFinder;
 
     public static <T>Graph<T> create() {
-        return new Graph<>(new HashMap<>());
+        return create(new BreadthTraversalPathFinder());
+    }
+
+    public static <T>Graph<T> create(PathFinder pathFinder) {
+        return new Graph<>(new HashMap<>(), pathFinder);
     }
 
     public UUID addVertex(T data) {
@@ -49,7 +53,7 @@ public class Graph<T> {
         return pathFinder.findPath(vertices, firstVertexId, secondVertexId);
     }
 
-    public List<Path<T>> findPaths(UUID firstVertexId, UUID secondVertexId) {
+    public Collection<Path<T>> findPaths(UUID firstVertexId, UUID secondVertexId) {
         return pathFinder.findPaths(vertices, firstVertexId, secondVertexId);
     }
 
