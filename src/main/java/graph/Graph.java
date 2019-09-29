@@ -16,12 +16,22 @@ public class Graph<T> {
 
     private final PathFinder pathFinder;
 
+    private final boolean oriented;
+
     public static <T>Graph<T> create() {
-        return create(new BreadthTraversalPathFinder());
+        return create(false);
+    }
+
+    public static <T>Graph<T> create(boolean oriented) {
+        return create(oriented, new BreadthTraversalPathFinder());
     }
 
     public static <T>Graph<T> create(PathFinder pathFinder) {
-        return new Graph<>(new HashMap<>(), pathFinder);
+        return create(false, pathFinder);
+    }
+
+    public static <T>Graph<T> create(boolean oriented, PathFinder pathFinder) {
+        return new Graph<>(new HashMap<>(), pathFinder, oriented);
     }
 
     public UUID addVertex(T data) {
@@ -32,15 +42,11 @@ public class Graph<T> {
     }
 
     public void addEdge(UUID firstVertexId, UUID secondVertexId) {
-        addEdge(firstVertexId, secondVertexId, NoWeight.INSTANCE);
+        addEdgeInternal(firstVertexId, secondVertexId, NoWeight.INSTANCE);
     }
 
     public void addEdge(UUID firstVertexId, UUID secondVertexId, Weight weight) {
-        Vertex<T> firstVertex = vertices.get(firstVertexId);
-        Vertex<T> secondVertex = vertices.get(secondVertexId);
-        verifyNonNull(firstVertex, secondVertex);
-        firstVertex.addEdge(secondVertex, weight);
-        secondVertex.addEdge(firstVertex, weight);
+        addEdgeInternal(firstVertexId, secondVertexId, weight);
     }
 
     public Optional<Path<T>> getPath(UUID firstVertexId, UUID secondVertexId) {
@@ -80,6 +86,16 @@ public class Graph<T> {
     private <T> Comparator<Path<T>> getPathComparator() {
         Comparator<Path<T>> comparator = Comparator.comparing(Path::getTotalWeight);
         return comparator.thenComparing(Path::getSegmentsCount);
+    }
+
+    public void addEdgeInternal(UUID firstVertexId, UUID secondVertexId, Weight weight) {
+        Vertex<T> firstVertex = vertices.get(firstVertexId);
+        Vertex<T> secondVertex = vertices.get(secondVertexId);
+        verifyNonNull(firstVertex, secondVertex);
+        firstVertex.addEdge(secondVertex, weight);
+        if (! oriented) {
+            secondVertex.addEdge(firstVertex, weight);
+        }
     }
 
 }
