@@ -53,7 +53,7 @@ public class GraphTest extends GraphTestBase {
             Collection<Path<String>> paths = graph.getAllPaths(startPoint, finishPoint);
             System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
             System.out.println("Paths:");
-            paths.stream().map(pathWriter::writeToString).forEach(System.out::println);
+            paths.stream().map(PathWriter::writeToString).forEach(System.out::println);
         }));
     }
 
@@ -61,7 +61,7 @@ public class GraphTest extends GraphTestBase {
     void printBestPathsBetweenAllCities() {
         cityIds.forEach(startPoint -> cityIds.forEach(finishPoint -> {
             System.out.println(graph.getData(startPoint) + " to " + graph.getData(finishPoint));
-            graph.getPath(startPoint, finishPoint).ifPresent(path -> System.out.println(pathWriter.writeToString(path)));
+            graph.getPath(startPoint, finishPoint).ifPresent(path -> System.out.println(PathWriter.writeToString(path)));
         }));
     }
 

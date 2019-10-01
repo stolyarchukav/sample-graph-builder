@@ -1,5 +1,8 @@
 package graph;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class PathWriter {
     
     public <T>String writeToString(Path<T> path) {

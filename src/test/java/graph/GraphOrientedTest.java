@@ -16,7 +16,7 @@ public class GraphOrientedTest extends GraphTestBase {
 
     @BeforeEach
     void setUp() {
-        graph = Graph.create(true);
+        graph = Graph.createOriented();
         cityIds = fillGraph(graph);
     }
 

@@ -7,8 +7,6 @@ import static java.util.Arrays.asList;
 
 public abstract class GraphTestBase {
 
-    protected PathWriter pathWriter = new PathWriter();
-
     protected List<UUID> fillGraph(Graph<String> graph) {
         UUID roma = graph.addVertex("Roma");
 

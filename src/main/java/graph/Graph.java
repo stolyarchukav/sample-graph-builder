@@ -22,7 +22,11 @@ public class Graph<T> {
         return create(false);
     }
 
-    public static <T>Graph<T> create(boolean oriented) {
+    public static <T>Graph<T> createOriented() {
+        return create(true);
+    }
+
+    private static <T>Graph<T> create(boolean oriented) {
         return create(oriented, new BreadthTraversalPathFinder());
     }
 
